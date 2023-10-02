@@ -5,9 +5,10 @@ import requests
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def home():
-    rand = random.randint(0,100)
+    rand = random.randint(0, 100)
     year = datetime.datetime.now().year
     return render_template("index.html", num=rand, current_year=year)
 
@@ -21,9 +22,10 @@ def guess(name):
 
 
 @app.route("/blog")
-def blog():
+def get_blog():
     all_posts = requests.get("https://api.npoint.io/c790b4d5cab58020d391").json()
     return render_template("blog.html", posts=all_posts)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
