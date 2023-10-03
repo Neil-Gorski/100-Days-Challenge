@@ -12,7 +12,7 @@ def home():
 
 @app.route("/post/<id_num>")
 def get_blog(id_num):
-    blogs = requests.get("https://api.npoint.io/c790b4d5cab58020d391").json()
+    blogs = requests.get("https://api.npoint.io/eb6cd8a5d783f501ee7d").json()
 
     # blog = next((blog for blog in blogs if blog['id'] == id_num), None)
     blog_content = None
