@@ -3,9 +3,19 @@
 {% block title %}My Library{% endblock title %}
 
 {% block content %}
+    {% if book_list %}
     <ul>
-      <li></li>
+
+      {% for book in book_list  %}
+      <li>{{ book.title }} - {{ book.author}} - {{ book.rating }}/5</li>
+
+      
+      {% endfor %}
+      
     </ul>
+    {% else %}
+    <p>Library is empty.</p>
+    {% endif %}
 
     <a href="{{ url_for('add')}}">Add New Book</a>
 {% endblock %}
