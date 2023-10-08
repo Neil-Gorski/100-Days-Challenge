@@ -17,7 +17,3 @@ email = driver.find_element(By.NAME, "email")
 email.send_keys("neil.gorski@msn.com")
 singup = driver.find_element(By.CSS_SELECTOR, "button")
 singup.click()
-
-
-
-

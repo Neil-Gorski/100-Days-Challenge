@@ -3,6 +3,7 @@ import requests
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def home():
     blogs = requests.get("https://api.npoint.io/c790b4d5cab58020d391").json()

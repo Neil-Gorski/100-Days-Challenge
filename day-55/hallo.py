@@ -9,6 +9,7 @@ def make_bold(funtion):
         return f"<b>{text}</b>"
     return wrapper_funtion
 
+
 def make_emphasis(funtion):
     def wrapper_funtion():
         text = funtion()

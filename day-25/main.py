@@ -9,7 +9,7 @@ print(data.columns)
 
 data_dict = {
     "Fur Color": ["Grey", "Cinnamon", "Black"],
-    "Count": [grey_squirrels_count,cinnamon_squirrels_count,black_squirrels_count]
+    "Count": [grey_squirrels_count, cinnamon_squirrels_count, black_squirrels_count]
 }
 
 new_data = pandas.DataFrame.from_dict(data_dict)

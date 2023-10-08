@@ -6,7 +6,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    blog_list = requests.get("https://api.npoint.io/eb6cd8a5d783f501ee7d").json()
+    blog_list = requests.get(
+        "https://api.npoint.io/eb6cd8a5d783f501ee7d").json()
     return render_template("index.html", blog_list=blog_list)
 
 
@@ -28,6 +29,7 @@ def get_blog(id_num):
 def about():
     return render_template("about.html")
 
+
 @app.route("/contact", methods=['POST', 'GET'])
 def contact():
     if request.method == "POST":
@@ -45,7 +47,5 @@ def receive_data():
     return "Successfully sent your message"
 
 
-
 if __name__ == "__main__":
     app.run(debug=True)
-

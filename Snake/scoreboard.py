@@ -3,6 +3,7 @@ ALIGNMENT = "center"
 FONT = ("Aral", 14, "normal")
 GAME_OVER_FONT = ("Aral", 20, "bold")
 
+
 class Scoreboard(Turtle):
     def __init__(self):
         super().__init__()

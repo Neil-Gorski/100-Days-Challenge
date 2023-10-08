@@ -19,4 +19,3 @@ class CarManager(Turtle):
 
     def move(self):
         self.forward(MOVE_INCREMENT * self.lvl)
-

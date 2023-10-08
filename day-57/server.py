@@ -23,7 +23,8 @@ def guess(name):
 
 @app.route("/blog")
 def get_blog():
-    all_posts = requests.get("https://api.npoint.io/c790b4d5cab58020d391").json()
+    all_posts = requests.get(
+        "https://api.npoint.io/c790b4d5cab58020d391").json()
     return render_template("blog.html", posts=all_posts)
 
 

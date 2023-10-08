@@ -10,7 +10,6 @@ class Paddle(Turtle):
         self.turtlesize(stretch_len=1, stretch_wid=5)
         self.goto(pos)
 
-
     def go_up(self):
         self.goto(self.xcor(), self.ycor() + 20)
 

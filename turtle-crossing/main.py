@@ -15,7 +15,7 @@ car_list = []
 player = Player()
 crash = False
 endline = False
-#key
+# key
 screen.listen()
 screen.onkeypress(player.move, "w")
 
@@ -37,6 +37,5 @@ while game_is_on:
         level += 1
         print("End Line")
         endline = False
-
 
     screen.update()

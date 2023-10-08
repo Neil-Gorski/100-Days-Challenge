@@ -12,7 +12,6 @@ class Food(Turtle):
         self.speed("fastest")
         self.refresh()
 
-
     def refresh(self):
         random_x = random.randint(-28, 28)
         random_x = random_x if random_x % 2 == 0 else random_x - 1

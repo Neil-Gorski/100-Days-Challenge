@@ -2,14 +2,15 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-app = Flask(__name__ )
+app = Flask(__name__)
 
 db_path = os.path.join(os.path.dirname(__file__), "new-books-collection.db")
 db_uri = f"sqlite:///{db_path}"
 app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 db = SQLAlchemy(app)
 
-class  Book(db.Model):
+
+class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, unique=False, nullable=False)
     author = db.Column(db.String, nullable=False)
@@ -18,15 +19,10 @@ class  Book(db.Model):
     def __repr__(self):
         return f'<Book {self.title}>'
 
+
 with app.app_context():
     db.create_all()
 
-
-# Create new book
-# with app.app_context():
-#     new_book = Book(title="Herry Potter", author="J.K. Rowling", rating=9.3)
-#     db.session.add(new_book)
-#     db.session.commit()
 
 # Read all the books
 with app.app_context():
@@ -35,36 +31,24 @@ with app.app_context():
 
 # Read A Particular Record By Query
 with app.app_context():
-    book = db.session.execute(db.select(Book).where(Book.title == "Herry Potter")).scalar()
+    book = db.session.execute(db.select(Book).where(
+        Book.title == "Herry Potter")).scalar()
     print(book.id)
 
 # Update A Particular Record PRIMARY KEY
 with app.app_context():
-    book_to_update = db.session.execute(db.select(Book).where(Book.id == 2)).scalar()
+    book_to_update = db.session.execute(
+        db.select(Book).where(Book.id == 2)).scalar()
     book_to_update.title = "Harry Potter and the Chamber of Secrets"
     db.session.commit()
 
 # Delete A Particular Record By PRIMARY KEY
 book_id = 4
 with app.app_context():
-    book_to_delete = db.session.execute(db.select(Book).where(Book.id == book_id)).scalar()
+    book_to_delete = db.session.execute(
+        db.select(Book).where(Book.id == book_id)).scalar()
     db.session.delete(book_to_delete)
     db.session.commit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # def create_connection(db_file):

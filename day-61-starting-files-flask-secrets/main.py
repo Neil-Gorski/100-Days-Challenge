@@ -10,7 +10,8 @@ class LoginForm(FlaskForm):
         DataRequired(),
         Email(message="enter the corrct Email"),
     ])
-    password = PasswordField(label='Password', validators=[DataRequired(), Length(min=6, message="Password is to short")])
+    password = PasswordField(label='Password', validators=[
+                             DataRequired(), Length(min=6, message="Password is to short")])
     submit = SubmitField(label="Login")
 
 

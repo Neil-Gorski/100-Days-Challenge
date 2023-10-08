@@ -26,19 +26,25 @@ Bootstrap5(app)
 
 class CafeForm(FlaskForm):
     cafe = StringField('Cafe name', validators=[DataRequired()])
-    location = StringField('Cafe Location on Google Maps (URL)', validators=[DataRequired(), URL()])
-    opening_time = TimeField('Opening Time e.g. 8AM', validators=[DataRequired()], )
-    closing_time = TimeField('Closing Time e.g. 5:30PM', validators=[DataRequired()])
-    rating_coffee = SelectField('Coffee Rating', validators=[DataRequired()], choices=[('☕', '☕'), ('☕☕', '☕☕'), ('☕☕☕', '☕☕☕'),('☕☕☕☕', '☕☕☕☕'),('☕☕☕☕☕', '☕☕☕☕☕')])
-    rating_wifi = SelectField('WiFi Rating', validators=[DataRequired()], choices=[('💪', '💪'), ('💪💪', '💪💪'), ('💪💪💪', '💪💪💪'),('💪💪💪💪', '💪💪💪💪'),('💪💪💪💪💪', '💪💪💪💪💪')])
-    rating_power = SelectField('Power Rating', validators=[DataRequired()], choices=[('🔌', '🔌'), ('🔌🔌', '🔌🔌'), ('🔌🔌🔌', '🔌🔌🔌'),('🔌🔌🔌🔌', '🔌🔌🔌🔌'),('🔌🔌🔌🔌🔌', '🔌🔌🔌🔌🔌')])
-    
+    location = StringField('Cafe Location on Google Maps (URL)', validators=[
+                           DataRequired(), URL()])
+    opening_time = TimeField('Opening Time e.g. 8AM',
+                             validators=[DataRequired()], )
+    closing_time = TimeField('Closing Time e.g. 5:30PM',
+                             validators=[DataRequired()])
+    rating_coffee = SelectField('Coffee Rating', validators=[DataRequired()], choices=[
+                                ('☕', '☕'), ('☕☕', '☕☕'), ('☕☕☕', '☕☕☕'), ('☕☕☕☕', '☕☕☕☕'), ('☕☕☕☕☕', '☕☕☕☕☕')])
+    rating_wifi = SelectField('WiFi Rating', validators=[DataRequired()], choices=[(
+        '💪', '💪'), ('💪💪', '💪💪'), ('💪💪💪', '💪💪💪'), ('💪💪💪💪', '💪💪💪💪'), ('💪💪💪💪💪', '💪💪💪💪💪')])
+    rating_power = SelectField('Power Rating', validators=[DataRequired()], choices=[(
+        '🔌', '🔌'), ('🔌🔌', '🔌🔌'), ('🔌🔌🔌', '🔌🔌🔌'), ('🔌🔌🔌🔌', '🔌🔌🔌🔌'), ('🔌🔌🔌🔌🔌', '🔌🔌🔌🔌🔌')])
+
     submit = SubmitField('Submit')
 
 # Exercise:
 # add: Location URL, open time, closing time, coffee rating, wifi rating, power outlet rating fields
 # make coffee/wifi/power a select element with choice of 0 to 5.
-#e.g. You could use emojis ☕️/💪/✘/🔌
+# e.g. You could use emojis ☕️/💪/✘/🔌
 # make all fields required except submit
 # use a validator to check that the URL field has a URL entered.
 # ---------------------------------------------------------------------------
