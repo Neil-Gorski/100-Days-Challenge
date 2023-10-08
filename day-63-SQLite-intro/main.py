@@ -1,16 +1,16 @@
-import sqlite3
-from sqlite3 import Error
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__ )
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///new-books-collection.db"
+db_path = os.path.join(os.path.dirname(__file__), "new-books-collection.db")
+db_uri = f"sqlite:///{db_path}"
+app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+db = SQLAlchemy(app)
 
-db = SQLAlchemy()
-
-class  Book(db.Model):
-    id = db.Column('book_id', db.Integer, primary_key=True)
+class  Books(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, unique=True, nullable=False)
     author = db.Column(db.String, nullable=False)
     rating = db.Column(db.Float, nullable=False)
@@ -18,18 +18,13 @@ class  Book(db.Model):
     def __repr__(self):
         return f'<Book {self.title}>'
 
-def __init__(self, title, author, rating):
-    self.title = title
-    self.author = author
-    self.rating = rating
-
-
-db.create_all()
+with app.app_context():
+    db.create_all()
 
 
 
 with app.app_context():
-    new_book = Book(id=2, title="Herry Potter", author="J.K. Rowling", rating=9.3)
+    new_book = Books(id=1, title="Herry Potter", author="J.K. Rowling", rating=9.3)
     db.session.add(new_book)
     db.session.commit()
 
