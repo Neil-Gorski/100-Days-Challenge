@@ -56,6 +56,11 @@ class RatingForm(FlaskForm):
     submit = SubmitField("Done")
 
 
+class AddForm(FlaskForm):
+    movie = StringField("Movie Title", validators=[DataRequired()])
+    submit = SubmitField("Add Movie")
+
+
 with app.app_context():
     db.create_all()
 
@@ -79,11 +84,26 @@ def edit(id):
         movie_to_update.review = new_data['review']
         db.session.commit()
         return redirect("/")
-
     return render_template("edit.html", form=form, id=id)
+
+
+@app.route("/delete/<int:id>", methods=['POST', 'GET'])
+def delete(id):
+    movie_to_delete = db.get_or_404(Movie, id)
+    db.session.delete(movie_to_delete)
+    db.session.commit()
+    return redirect("/")
+
+
+@app.route("/add", methods=['POST', 'GET'])
+def add():
+    form = AddForm()
+    if form.validate_on_submit():
+        new_movie = request.form['movie']
+        print(new_movie)
+        return redirect("/")
+    return render_template("add.html", form=form)
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-# delete me
