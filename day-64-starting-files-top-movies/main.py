@@ -3,8 +3,8 @@ from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SubmitField, DecimalField
+from wtforms.validators import DataRequired, NumberRange
 import requests
 
 
@@ -47,6 +47,15 @@ class Movie(db.Model):
         return {c.name: getattr(self, c.name) for c in self.__tabel__.columns}
 
 
+class RatingForm(FlaskForm):
+    rating = DecimalField("Your Rating Out of 10 e.g. 6.4",
+                          places=1,
+                          validators=[DataRequired(),
+                                      NumberRange(min=1, max=10)])
+    review = StringField("Your Review", validators=[DataRequired()])
+    submit = SubmitField("Done")
+
+
 with app.app_context():
     db.create_all()
 
@@ -58,6 +67,20 @@ def home():
         result = db.session.execute(db.select(Movie).order_by(Movie.title))
         all_movies = result.scalars().all()
     return render_template("index.html", movies=all_movies)
+
+
+@app.route("/edit/<int:id>", methods=['POST', 'GET'])
+def edit(id):
+    form = RatingForm()
+    movie_to_update = db.get_or_404(Movie, id)
+    if form.validate_on_submit():
+        new_data = request.form
+        movie_to_update.rating = new_data['rating']
+        movie_to_update.review = new_data['review']
+        db.session.commit()
+        return redirect("/")
+
+    return render_template("edit.html", form=form, id=id)
 
 
 if __name__ == '__main__':
