@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 import os
+import random
+
 
 '''
 Install the required packages first: 
@@ -48,7 +50,15 @@ def home():
 
 
 # HTTP GET - Read Record
+@app.route("/random")
+def get_random_cafe():
+    result = db.session.execute(db.select(Cafe))
+    all_cafes = result.scalars().all()
+    random_cafe = random.choice(all_cafes)
+    print(random_cafe)
 
+    return render_template("index.html")
+    # return render_template("random.html")
 # HTTP POST - Create Record
 
 # HTTP PUT/PATCH - Update Record
