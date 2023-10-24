@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 '''
 Install the required packages first: 
@@ -13,16 +14,16 @@ pip3 install -r requirements.txt
 
 This will install the packages from requirements.txt for this project.
 '''
-
+db_path = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'instance/cafes.db')}"
 app = Flask(__name__)
 
-##Connect to Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
+# Connect to Database
+app.config['SQLALCHEMY_DATABASE_URI'] = db_path
 db = SQLAlchemy()
 db.init_app(app)
 
 
-##Cafe TABLE Configuration
+# Cafe TABLE Configuration
 class Cafe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), unique=True, nullable=False)
@@ -37,22 +38,22 @@ class Cafe(db.Model):
     coffee_price = db.Column(db.String(250), nullable=True)
 
 
-with app.create_contect():
+with app.app_context():
     db.create_all()
 
 
 @app.route("/")
 def home():
     return render_template("index.html")
-    
 
-## HTTP GET - Read Record
 
-## HTTP POST - Create Record
+# HTTP GET - Read Record
 
-## HTTP PUT/PATCH - Update Record
+# HTTP POST - Create Record
 
-## HTTP DELETE - Delete Record
+# HTTP PUT/PATCH - Update Record
+
+# HTTP DELETE - Delete Record
 
 
 if __name__ == '__main__':

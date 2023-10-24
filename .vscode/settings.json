@@ -3,5 +3,14 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.autopep8"
     },
-    "python.formatting.provider": "none"
+    "python.formatting.provider": "none",
+    "sqltools.useNodeRuntime": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:100-Days-Challenge}/day-66-starting-files-cafe-api/instance/cafes.db",
+            "name": "day-66-cafes"
+        }
+    ]
 }
