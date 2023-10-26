@@ -39,6 +39,15 @@ class Cafe(db.Model):
     can_take_calls = db.Column(db.Boolean, nullable=False)
     coffee_price = db.Column(db.String(250), nullable=True)
 
+    def to_dict(self):
+        """
+        Converts the object to a dictionary representation.
+
+        Returns:
+            dict: A dictionary representation of the object, where the keys are the column names of the table and the values are the corresponding attribute values of the object.
+        """
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
 
 with app.app_context():
     db.create_all()
@@ -55,10 +64,9 @@ def get_random_cafe():
     result = db.session.execute(db.select(Cafe))
     all_cafes = result.scalars().all()
     random_cafe = random.choice(all_cafes)
-    print(random_cafe)
+    # Simply convert the random_cafe data record to a dictionary of key-value pairs.
+    return jsonify(cafe=random_cafe.to_dict())
 
-    return render_template("index.html")
-    # return render_template("random.html")
 # HTTP POST - Create Record
 
 # HTTP PUT/PATCH - Update Record
