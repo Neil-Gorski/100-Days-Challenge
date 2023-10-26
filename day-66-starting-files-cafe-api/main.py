@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 import os
 import random
+import urllib.parse
 
 
 '''
@@ -53,6 +54,13 @@ with app.app_context():
     db.create_all()
 
 
+def str_to_bool(v):
+    if v in ['True', ' true', 'T', 't', 'Yes', 'yes', 'y', '1']:
+        return True
+    else:
+        return False
+
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -74,8 +82,45 @@ def get_all_cafes():
     all_cafes = result.scalars().all()
     all_cafes_dict = [cafe.to_dict() for cafe in all_cafes]
     return jsonify(cafes=all_cafes_dict)
+
+
+@app.route('/search')
+def search_cafes_location():
+    location = request.args.get("loc")
+    cafes = Cafe.query.filter_by(location=location).all()
+    if len(cafes) == 0:
+        error = {
+            "error": {
+                "Not Found": "Sorry, we don't have a cafe at that location"
+            }
+        }
+        return jsonify(error)
+    cafes = [cafe.to_dict() for cafe in cafes]
+    return jsonify(cafes=cafes)
 # HTTP POST - Create Record
 
+
+@app.route("/add", methods=["POST", "GET"])
+def add_cafe():
+    if request.method == "POST":
+        new_cafe = Cafe(
+            name=request.form.get("name"),
+            map_url=request.form.get("map_url"),
+            img_url=request.form.get("img_url"),
+            location=request.form.get("loc"),
+            has_sockets=str_to_bool(request.form.get("has_sockets")),
+            has_toilet=str_to_bool(request.form.get("has_toilet")),
+            has_wifi=str_to_bool(request.form.get("has_wifi")),
+            can_take_calls=str_to_bool(request.form.get("can_take_calls")),
+            seats=request.form.get("seats"),
+            coffee_price=urllib.parse.unquote(
+                request.form.get("coffee_price")),
+        )
+        print(urllib.parse.unquote(request.form.get("coffee_price")))
+        db.session.add(new_cafe)
+        db.session.commit()
+        return jsonify(response={"success": "Successfully added the new Cafe."})
+    return jsonify(error={"Not added": "Sorry, some data is missing."})
 # HTTP PUT/PATCH - Update Record
 
 # HTTP DELETE - Delete Record
