@@ -25,6 +25,7 @@ This will install the packages from the requirements.txt for this project.
 
 db_path = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'instance/posts.db')}"
 app = Flask(__name__)
+ckeditor = CKEditor(app)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
 
@@ -34,7 +35,17 @@ db = SQLAlchemy()
 db.init_app(app)
 
 
+class BlogForm(FlaskForm):
+    title = StringField("Blog Title", validators=[DataRequired()])
+    subtitle = StringField("Blog Subtitle", validators=[DataRequired()])
+    body = CKEditorField("Blog Body", validators=[DataRequired()])
+    author = StringField("Blog Author", validators=[DataRequired()])
+    img_url = StringField("Backend Image", validators=[DataRequired()])
+    submit = SubmitField("Submit")
+
 # CONFIGURE TABLE
+
+
 class BlogPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), unique=True, nullable=False)
@@ -64,12 +75,31 @@ def show_post(post_id):
 
 
 # TODO: add_new_post() to create a new blog post
+@app.route('/new-post', methods=["GET", "POST"])
+def new_post():
+    form = BlogForm()
+    if form.validate_on_submit():
+        new_post = BlogPost(
+            title=form.title.data,
+            subtitle=form.subtitle.data,
+            body=form.body.data,
+            img_url=form.img_url.data,
+            author=form.author.data,
+            date=date.today().strftime("%B %d, %Y")
+        )
+        db.session.add(new_post)
+        db.session.commit()
+        return redirect(url_for("get_all_posts"))
+
+    return render_template("make-post.html", form=form)
 
 # TODO: edit_post() to change an existing blog post
 
 # TODO: delete_post() to remove a blog post from the database
 
 # Below is the code from previous lessons. No changes needed.
+
+
 @app.route("/about")
 def about():
     return render_template("about.html")
