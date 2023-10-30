@@ -38,7 +38,7 @@ def register():
 
         user = User(
             email=user["email"],
-            password=user["password"],
+            password=generate_password_hash(user["password"], salt_length=8),
             name=user["name"]
         )
         db.session.add(user)
