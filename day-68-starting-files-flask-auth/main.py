@@ -46,19 +46,24 @@ def home():
 
 @app.route('/register', methods=['POST', "GET"])
 def register():
-    if request.form:
-        user = request.form.to_dict()
+    if request.method == 'POST':
+        email = request.form.get('email')
+        result = db.session.execute(db.select(User).where(User.email == email))
+        user = result.scalar()
+        if user:
+            flash("You've already signed up with that email, log in instead!")
+            return redirect(url_for('login'))
 
         new_user = User(
-            email=user["email"],
-            password=generate_password_hash(user["password"], salt_length=8),
-            name=user["name"]
+            email=request.form.get("email"),
+            password=generate_password_hash(
+                request.form.get("password"), salt_length=8),
+            name=request.form.get("name")
         )
+
         db.session.add(new_user)
         db.session.commit()
-
         login_user(new_user)
-
         return render_template("secrets.html", user=user)
 
     return render_template("register.html")
@@ -66,17 +71,20 @@ def register():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    error = None
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get("password")
 
         result = db.session.execute(db.select(User).where(User.email == email))
         user = result.scalar()
-
-        if check_password_hash(pwhash=user.password, password=password):
+        if not user:
+            flash("That email does not exist, please try again.")
+        elif not check_password_hash(pwhash=user.password, password=password):
+            flash('Password incorrect, please try again.')
+        else:
             login_user(user)
             return redirect(url_for("secrets"))
-
     return render_template("login.html")
 
 
