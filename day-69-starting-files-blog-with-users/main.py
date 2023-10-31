@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from sqlalchemy.orm import relationship
 # Import your forms from the forms.py
-from forms import CreatePostForm
+from forms import CreatePostForm, RegisterForm
 
 
 '''
@@ -32,6 +32,13 @@ ckeditor = CKEditor(app)
 Bootstrap5(app)
 
 # TODO: Configure Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.get_or_404(User, user_id)
 
 
 # CONNECT TO DB
@@ -54,6 +61,12 @@ class BlogPost(db.Model):
 
 
 # TODO: Create a User table for all your registered users.
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
 
 
 with app.app_context():
@@ -61,9 +74,25 @@ with app.app_context():
 
 
 # TODO: Use Werkzeug to hash the user's password when creating a new user.
-@app.route('/register')
+@app.route('/register', methods=['POST', 'GET'])
 def register():
-    return render_template("register.html")
+    form = RegisterForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        email = form.email.data
+        password = generate_password_hash(form.password.data, salt_length=16)
+        result = db.session.execute(db.select(User).where(User.email == email))
+        user = result.scalar()
+        if not user:
+            new_user = User(name=name, email=email, password=password)
+
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user)
+
+            return redirect(url_for('get_all_posts'))
+
+    return render_template("register.html", form=form)
 
 
 # TODO: Retrieve a user from the database based on their email.
