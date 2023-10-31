@@ -83,14 +83,16 @@ def register():
         password = generate_password_hash(form.password.data, salt_length=16)
         result = db.session.execute(db.select(User).where(User.email == email))
         user = result.scalar()
-        if not user:
-            new_user = User(name=name, email=email, password=password)
+        if user:
+            flash("You've already signed up with this email, log in instead!")
+            return redirect(url_for('login'))
+        new_user = User(name=name, email=email, password=password)
 
-            db.session.add(new_user)
-            db.session.commit()
-            login_user(new_user)
+        db.session.add(new_user)
+        db.session.commit()
 
-            return redirect(url_for('get_all_posts'))
+        login_user(new_user)
+        return redirect(url_for('get_all_posts'))
 
     return render_template("register.html", form=form)
 
