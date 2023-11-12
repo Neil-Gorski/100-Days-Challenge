@@ -42,7 +42,7 @@ def load_user(user_id):
 
 
 # CONNECT TO DB
-db_path = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'instance/users.db')}"
+db_path = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'instance/posts.db')}"
 app.config['SQLALCHEMY_DATABASE_URI'] = db_path
 db = SQLAlchemy()
 db.init_app(app)
@@ -107,16 +107,23 @@ def login():
         result = db.session.execute(db.select(User).where(User.email == email))
         user = result.scalar()
 
-        if user and check_password_hash(pwhash=user.password, password=password):
+        if not user:
+            flash("That email does not exist, please try again.")
+            return redirect(url_for('login'))
+        # Password incorrect
+        elif not check_password_hash(user.password, password):
+            flash('Password incorrect, please try again.')
+            return redirect(url_for('login'))
+        else:
             login_user(user)
-            print("User login successful")
-            return redirect(url_for("get_all_posts"))
+            return redirect(url_for('get_all_posts'))
 
     return render_template("login.html", form=form)
 
 
 @app.route('/logout')
 def logout():
+    logout_user()
     return redirect(url_for('get_all_posts'))
 
 
